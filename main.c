@@ -24,7 +24,8 @@
 }
 */
 
-int	list_dir_contents(void)
+//int	list_dir_contents(void)
+int	basic_ls_a(void)
 {
 	const char	*filename;
 	DIR	*dirp = NULL;
@@ -53,7 +54,8 @@ int	list_dir_contents(void)
 	return (0);
 }
 
-int	list_dir_contents_no_dot(void)
+//int	list_dir_contents_no_dot(void)
+int	basic_ls(void)
 {
 	const char	*filename;
 	DIR	*dirp = NULL;
@@ -63,12 +65,12 @@ int	list_dir_contents_no_dot(void)
 	dirp = opendir(filename);
 	if (dirp == NULL)
 	{
-		printf("DEBUG: dirp returned NULL\n");
+//		printf("DEBUG: dirp returned NULL\n");
 		return (0);
 	}
 	else
 	{
-		printf("DEBUG: dirp returned a pointer\n");
+//		printf("DEBUG: dirp returned a pointer\n");
 //		dp = readdir(dirp);
 //		if (dp == NULL)
 //			printf("DEBUG: dp returned NULL\n");
@@ -171,9 +173,16 @@ int	main(int argc, char **argv)
 
 	int	this_options = 0;
 	if (check_args(argc, argv, &this_options) == 1)
-		printf("Invalid options\n");
+	{
+		printf("MAIN: Invalid options\n");
+		return (1);
+	}
+	if (this_options == 0)
+		basic_ls();
+	if (this_options == 4)
+		basic_ls_a();
 //		file_info(argv[1]);
-	printf("options are %d\n", this_options);
+//	printf("options are %d\n", this_options);
 //		check_args(argc, argv);
 /*	filename = argv[1];
 	dp = opendir(filename);
