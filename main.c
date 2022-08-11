@@ -172,6 +172,9 @@ int	main(int argc, char **argv)
 		}*/
 
 	int	this_options = 0;
+//more checks to add:  IS okay: ls filename && ls -l filename
+//more checks to add: NOT okay: ls filename -l && ls -l filename -l BEWARE!!!!! NOTE: both produce outputs, no such file or directory and then the ls filename output, other ls -l filename output
+//	int	more_dirs = 0;
 	if (check_args(argc, argv, &this_options) == 1)
 	{
 		printf("MAIN: Invalid options\n");
