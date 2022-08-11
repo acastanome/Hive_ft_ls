@@ -2,6 +2,7 @@
 #ifndef	FT_LS_H
 # define	FT_LS_H
 
+#include <unistd.h>//write
 #include <dirent.h>//opendir
 
 //DIR *opendir(const char *filename);		ret: pointer or NULL
