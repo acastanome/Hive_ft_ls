@@ -4,6 +4,17 @@
 
 #include <unistd.h>//write
 #include <dirent.h>//opendir
+#include "libft/libft.h"
+
+//enum for the options of ls, with values 1, 2, 4, 8, 16
+enum options
+{
+	o_l = 1 << 0,
+	o_R = 1 << 1,
+	o_a = 1 << 2,
+	o_r = 1 << 3,
+	o_t = 1 << 4,
+};
 
 //DIR *opendir(const char *filename);		ret: pointer or NULL
 //struct dirent *readdir(DIR *dirp);		ret: p to next dir entry, NULL when endofdir or error (then sets errno)

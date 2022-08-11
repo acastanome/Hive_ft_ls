@@ -96,6 +96,64 @@ int	file_info(char *filename)
 	return (0);
 }
 
+//ascii decimal values: l 108, R 82, a 97, r 114, t 116
+int	set_options(int *this_options, char *arg)
+{
+	int	i;
+
+	i = 1;
+	if (arg[0] != '-')
+	{
+		printf("ls: %c: No such file or directory", arg[0]);
+		return (1);
+	}
+	while (arg[i])
+	{
+		switch(arg[i])
+		{
+		case 'l':
+			*this_options = ((*this_options) | o_l);
+			break;
+		case 'R':
+			*this_options = ((*this_options) | o_R);
+			break;
+		case 'a':
+			*this_options = ((*this_options) | o_a);
+			break;
+		case 'r':
+			*this_options = ((*this_options) | o_r);
+			break;
+		case 't':
+			*this_options = ((*this_options) | o_t);
+			break;
+		default:
+			printf("ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+int	check_args(int argc, char **argv, int *this_options)
+{
+	int	i;
+
+	i = 1;
+//check argv[0] separately
+//	if (ft_strcmp("./ft_ls", argv[0]) != 0)
+//	{
+//		printf("zsh: command not found: %s\n", argv[0]);
+//	}
+	while (i < argc)
+	{
+		if (set_options(this_options, argv[i]) == 1)
+			return (1);
+		i++;
+	}
+	return (0);//(this_options);
+}
+
 int	main(int argc, char **argv)
 {
 /*	const char	*filename;
@@ -104,16 +162,18 @@ int	main(int argc, char **argv)
 //	if (argc < 2)
 //		return (0);
 
-	if ((argc == 1) && argv)
+/*	if ((argc == 1) && argv)
 	{
 		list_dir_contents();
 		printf("\nDEBUG: now without dot files\n");
 		list_dir_contents_no_dot();
-	}
-	if (argc == 2)
-	{
-		file_info(argv[1]);
-	}
+		}*/
+
+	int	this_options = 0;
+	if (check_args(argc, argv, &this_options) == 1)
+		printf("Invalid options\n");
+//		file_info(argv[1]);
+	printf("options are %d\n", this_options);
 //		check_args(argc, argv);
 /*	filename = argv[1];
 	dp = opendir(filename);
