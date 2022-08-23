@@ -116,36 +116,11 @@ int	get_arg_names(char *list, char *arg)
 		printf("ls: %c: No such file or directory", arg[0]);
 		return (1);
 	}
-	while (arg[i])
-	{
-		switch(arg[i])
-		{
-		case 'l':
-			options = ((options) | o_l);
-			break;
-		case 'R':
-			options = ((options) | o_R);
-			break;
-		case 'a':
-			options = ((options) | o_a);
-			break;
-		case 'r':
-			options = ((options) | o_r);
-			break;
-		case 't':
-			options = ((options) | o_t);
-			break;
-		default:
-			printf("ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
-			exit(1);
-		}
-		i++;
-	}
 	return (options);
 }
 
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
-int	get_options(int options, char *arg)
+int	set_options(int options, char *arg)
 {
 	int	i;
 
@@ -181,16 +156,17 @@ int	process_input(int argc, char **argv, t_data *data)
 		if (argv[i][0] == '-')
 		{
 			if ((data->arg_file_count == 0) && argv[i][1])//to catch ls -
-				data->options = get_options(data->options, argv[i]);
+				data->options = set_options(data->options, argv[i]);
 			else
 			{
 				printf("ls: %s: No such file or directory", argv[i]);
+				data->arg_file_count++;
 				data->ret = 1;
 			}
 		}
 		else
 		{
-			get_arg_names(argv[i]);
+			data->arg_names = get_arg_names(argv[i]);
 			data->arg_file_count++:
 		}
 		i++;
@@ -206,6 +182,7 @@ int	main(int argc, char **argv)
 	data.ret = 0;
 	data.options = 0;
 	data.arg_file_count = 0;
+	data->arg_names = NULL;
 	//	data.arg_names = NULL;
 	//	data.dir_files = NULL;
 	//		int	options = 0;
