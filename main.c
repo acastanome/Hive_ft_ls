@@ -1,6 +1,8 @@
 
+
 #include "./ft_ls.h"
 #include <stdio.h>//printf
+#include <stdlib.h>
 
 //test what opendir returns for file as arg: returns NULL
 /*int	main(int argc, char **argv)
@@ -99,13 +101,19 @@ int	file_info(char *filename)
 }
 
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
-int	set_options(int *this_options, char *arg)
+int	get_arg_names(char *list, char *arg)
 {
-	int	i;
+  char	*name;
+
+  name = ft_strdup(arg);
+  if (!name)
+    exit(1);
+  int	i;
 
 	i = 1;
 	if (arg[0] != '-')
 	{
+	  //add to list of arg_names
 		printf("ls: %c: No such file or directory", arg[0]);
 		return (1);
 	}
@@ -114,78 +122,105 @@ int	set_options(int *this_options, char *arg)
 		switch(arg[i])
 		{
 		case 'l':
-			*this_options = ((*this_options) | o_l);
+			options = ((options) | o_l);
 			break;
 		case 'R':
-			*this_options = ((*this_options) | o_R);
+			options = ((options) | o_R);
 			break;
 		case 'a':
-			*this_options = ((*this_options) | o_a);
+			options = ((options) | o_a);
 			break;
 		case 'r':
-			*this_options = ((*this_options) | o_r);
+			options = ((options) | o_r);
 			break;
 		case 't':
-			*this_options = ((*this_options) | o_t);
+			options = ((options) | o_t);
 			break;
 		default:
 			printf("ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
-			return (1);
+			exit(1);
 		}
 		i++;
 	}
-	return (0);
+	return (options);
 }
 
-int	check_args(int argc, char **argv, int *this_options)
+//ascii decimal values: l 108, R 82, a 97, r 114, t 116
+int	get_options(int options, char *arg)
 {
 	int	i;
 
 	i = 1;
-//check argv[0] separately
-//	if (ft_strcmp("./ft_ls", argv[0]) != 0)
-//	{
-//		printf("zsh: command not found: %s\n", argv[0]);
-//	}
-	while (i < argc)
+	if (arg[0] != '-')
 	{
-		if (set_options(this_options, argv[i]) == 1)
-			return (1);
+	  //add to list of arg_names
+		printf("ls: %c: No such file or directory", arg[0]);
+		return (1);
+	}
+	while (arg[i])
+	{
+		switch(arg[i])
+		{
+		case 'l':
+			options = ((options) | o_l);
+			break;
+		case 'R':
+			options = ((options) | o_R);
+			break;
+		case 'a':
+			options = ((options) | o_a);
+			break;
+		case 'r':
+			options = ((options) | o_r);
+			break;
+		case 't':
+			options = ((options) | o_t);
+			break;
+		default:
+			printf("ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
+			exit(1);
+		}
 		i++;
 	}
-	return (0);//(this_options);
+	return (options);
+}
+
+//check_args
+int	get_data(int argc, char **argv, t_data *data)
+{
+	int	i;
+
+	i = 1;
+	while (i < argc)
+	{
+	  if (argv[i][0] == '-')
+	    data->options = get_options(data->options, argv[i]);
+	  else
+	    get_arg_names(argv[i]);
+	  i++;
+	}
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-/*	const char	*filename;
-	DIR	*dp = NULL;
-*/
-//	if (argc < 2)
-//		return (0);
-
-/*	if ((argc == 1) && argv)
-	{
-		list_dir_contents();
-		printf("\nDEBUG: now without dot files\n");
-		list_dir_contents_no_dot();
-		}*/
-
-	int	this_options = 0;
+  //	const char	*filename;
+  t_data	data;
+	data.options = 0;
+	//	data.arg_names = NULL;
+	//	data.dir_files = NULL;
+	//		int	options = 0;
 //more checks to add:  IS okay: ls filename && ls -l filename
 //more checks to add: NOT okay: ls filename -l && ls -l filename -l BEWARE!!!!! NOTE: both produce outputs, no such file or directory and then the ls filename output, other ls -l filename output
 //	int	more_dirs = 0;
-	if (check_args(argc, argv, &this_options) == 1)
-	{
-		printf("MAIN: Invalid options\n");
-		return (1);
-	}
-	if (this_options == 0)
+	get_data(argc, argv, &data);
+	printf("OPTIONS: %d\n", data.options);
+	/*	if (options == 0)
 		basic_ls();
-	if (this_options == 4)
-		basic_ls_a();
+	if (options == 4)
+	basic_ls_a();*/
 //		file_info(argv[1]);
-//	printf("options are %d\n", this_options);
+//	printf("options are %d\n", options);
 //		check_args(argc, argv);
 /*	filename = argv[1];
 	dp = opendir(filename);
