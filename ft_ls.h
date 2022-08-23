@@ -6,15 +6,17 @@
 #include <dirent.h>//opendir
 #include "libft/libft.h"
 
-typedef struct s_data
+typedef struct	s_data
 {
-  int options;
-  char	*arg_names;
-  char	*dir_files;
+	int		ret;
+	int		options;
+	int		arg_file_count;
+	char	*arg_names;
+	char	*dir_files;
 }	t_data;
 
 //enum for the options of ls, with values 1, 2, 4, 8, 16
-enum options
+enum e_options
 {
 	o_l = 1 << 0,
 	o_R = 1 << 1,

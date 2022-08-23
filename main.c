@@ -1,5 +1,4 @@
 
-
 #include "./ft_ls.h"
 #include <stdio.h>//printf
 #include <stdlib.h>
@@ -151,53 +150,47 @@ int	get_options(int options, char *arg)
 	int	i;
 
 	i = 1;
-	if (arg[0] != '-')
-	{
-	  //add to list of arg_names
-		printf("ls: %c: No such file or directory", arg[0]);
-		return (1);
-	}
 	while (arg[i])
 	{
-		switch(arg[i])
-		{
-		case 'l':
+		if (arg[i] == 'l')
 			options = ((options) | o_l);
-			break;
-		case 'R':
+		else if (arg[i] == 'R')
 			options = ((options) | o_R);
-			break;
-		case 'a':
+		else if (arg[i] == 'a')
 			options = ((options) | o_a);
-			break;
-		case 'r':
+		else if (arg[i] == 'r')
 			options = ((options) | o_r);
-			break;
-		case 't':
+		else if (arg[i] == 't')
 			options = ((options) | o_t);
-			break;
-		default:
+		else
 			printf("ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
 			exit(1);
-		}
 		i++;
 	}
 	return (options);
 }
 
 //check_args
-int	get_data(int argc, char **argv, t_data *data)
+int	process_input(int argc, char **argv, t_data *data)
 {
 	int	i;
 
 	i = 1;
 	while (i < argc)
 	{
-	  if (argv[i][0] == '-')
-	    data->options = get_options(data->options, argv[i]);
-	  else
-	    get_arg_names(argv[i]);
-	  i++;
+		if (argv[i][0] == '-')
+		{
+			if (data->arg_file_count == 0)
+				data->options = get_options(data->options, argv[i]);
+			else
+			{
+				printf("ls: %s: No such file or directory", argv[i]);
+				data->ret = 1;
+			}
+		}
+		else
+			get_arg_names(argv[i]);
+		i++;
 	}
 	return (0);
 }
@@ -205,15 +198,18 @@ int	get_data(int argc, char **argv, t_data *data)
 int	main(int argc, char **argv)
 {
   //	const char	*filename;
-  t_data	data;
+	t_data	data;
+
+	data.ret = 0;
 	data.options = 0;
+	data.arg_file_count = 0;
 	//	data.arg_names = NULL;
 	//	data.dir_files = NULL;
 	//		int	options = 0;
 //more checks to add:  IS okay: ls filename && ls -l filename
 //more checks to add: NOT okay: ls filename -l && ls -l filename -l BEWARE!!!!! NOTE: both produce outputs, no such file or directory and then the ls filename output, other ls -l filename output
 //	int	more_dirs = 0;
-	get_data(argc, argv, &data);
+	process_input(argc, argv, &data);
 	printf("OPTIONS: %d\n", data.options);
 	/*	if (options == 0)
 		basic_ls();
