@@ -180,7 +180,7 @@ int	process_input(int argc, char **argv, t_data *data)
 	{
 		if (argv[i][0] == '-')
 		{
-			if (data->arg_file_count == 0)
+			if ((data->arg_file_count == 0) && argv[i][1])//to catch ls -
 				data->options = get_options(data->options, argv[i]);
 			else
 			{
@@ -189,7 +189,10 @@ int	process_input(int argc, char **argv, t_data *data)
 			}
 		}
 		else
+		{
 			get_arg_names(argv[i]);
+			data->arg_file_count++:
+		}
 		i++;
 	}
 	return (0);
