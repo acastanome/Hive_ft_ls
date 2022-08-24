@@ -100,23 +100,14 @@ int	file_info(char *filename)
 }
 
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
-int	get_arg_names(char *list, char *arg)
+int	add_arg_name(char *list_end, char *arg)
 {
-  char	*name;
+	char	*name;
 
-  name = ft_strdup(arg);
-  if (!name)
-    exit(1);
-  int	i;
-
-	i = 1;
-	if (arg[0] != '-')
-	{
-	  //add to list of arg_names
-		printf("ls: %c: No such file or directory", arg[0]);
-		return (1);
-	}
-	return (options);
+	name = ft_strdup(arg);
+	if (!name)
+		exit(1);
+	return (name);
 }
 
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
@@ -138,7 +129,7 @@ int	set_options(int options, char *arg)
 		else if (arg[i] == 't')
 			options = ((options) | o_t);
 		else
-			printf("ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
+			printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
 			exit(1);
 		i++;
 	}
@@ -159,15 +150,15 @@ int	process_input(int argc, char **argv, t_data *data)
 				data->options = set_options(data->options, argv[i]);
 			else
 			{
-				printf("ls: %s: No such file or directory", argv[i]);
-				data->arg_file_count++;
+				printf("ft_ls: %s: No such file or directory", argv[i]);
+				data->arg_has_files = 1;
 				data->ret = 1;
 			}
 		}
 		else
 		{
-			data->arg_names = get_arg_names(argv[i]);
 			data->arg_file_count++:
+			data->arg_names = get_arg_names(data->arg_names, argv[i]);
 		}
 		i++;
 	}
@@ -181,6 +172,7 @@ int	main(int argc, char **argv)
 
 	data.ret = 0;
 	data.options = 0;
+	data.arg_has_files = 0;
 	data.arg_file_count = 0;
 	data->arg_names = NULL;
 	//	data.arg_names = NULL;
