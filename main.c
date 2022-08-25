@@ -143,7 +143,7 @@ int	process_input(int argc, char **argv, t_data *data)
 				data->options = set_options(data->options, argv[i]);
 			else
 			{
-				printf("ft_ls: %s: No such file or directory", argv[i]);
+				printf("ft_ls: %s: No such file or directory\n", argv[i]);
 				data->ret = 1;
 			}
 		}
@@ -154,7 +154,7 @@ int	process_input(int argc, char **argv, t_data *data)
 	if (data->arg_file_count != 0)
 	{
 		data->arg_names = (char **)malloc(sizeof(char *) * (data->arg_file_count + 1));
-		printf("process_input(): data->arg_names is size %d + 1\n", data->arg_file_count);
+//		printf("process_input(): data->arg_names is size %d + 1\n", data->arg_file_count);
 		if (!(data->arg_names))
 		{
 			printf("process_input(): FAILED TO ALLOCATE data->arg_names\n");
@@ -167,7 +167,7 @@ int	process_input(int argc, char **argv, t_data *data)
 			if (argv[i][0] != '-')
 			{
 				data->arg_names[j] = ft_strdup(argv[i]);
-				printf("process_input(): data->arg_names has one more item\n");
+//				printf("process_input(): data->arg_names has one more item\n");
 				if (!(data->arg_names[j]))
 				{
 					printf("process_input(): FAILED TO ALLOCATE data->arg_names[j]\n");
@@ -186,6 +186,7 @@ int	process_input(int argc, char **argv, t_data *data)
 			printf("%s\n", *(data->arg_names + x));
 			x++;
 		}
+
 	}
 	return (0);
 }
@@ -207,7 +208,7 @@ int	main(int argc, char **argv)
 //more checks to add: NOT okay: ls filename -l && ls -l filename -l BEWARE!!!!! NOTE: both produce outputs, no such file or directory and then the ls filename output, other ls -l filename output
 //	int	more_dirs = 0;
 	process_input(argc, argv, &data);
-	printf("OPTIONS: %d\n", data.options);
+	printf("OPTIONS: %d\n", data.options);//TESTPRINT
 	/*	if (options == 0)
 		basic_ls();
 	if (options == 4)
@@ -226,5 +227,6 @@ int	main(int argc, char **argv)
 		printf("DEBUG: dp returned a pointer\n");
 	closedir(dp);
 */
-	return (0);
+	exit(0);
+//	return (0);
 }
