@@ -58,3 +58,16 @@ fillit		gnl		libftproject	reloadedfinal
 		sible to the system command. Cordial when grading padding/ pagination,
 		but no information can be missing.
 
+
+------
+
+working on file_info()
+https://linuxconfig.org/identifying-file-types-in-linux
+
+https://www.systutorials.com/docs/linux/man/2-lstat/
+follow 7 inode for more info
+
+https://perldoc.perl.org/functions/stat
+
+https://stackoverflow.com/questions/10323060/printing-file-permissions-like-ls-l-using-stat2-in-c
+
