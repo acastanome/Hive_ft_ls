@@ -132,10 +132,14 @@ int	file_info(char *filename)
 
 	printf("Number of links: %d\n", sb.st_nlink);//1
 
-	printf("Owner: \n", sb.st_uid);//zaz
-	printf("Group: \n", sb.st_gid);//staff
-	printf("Size: %\n", sb.st_size);//2142 octets
-	printf("Last modification date: \n");//Sep 17 23:42
+	ft_putstr("MISSING OWNER AND GROUP \n");
+//	printf("Owner: \n", sb.st_uid);//zaz
+//	printf("Group: \n", sb.st_gid);//staff
+//	printf("Size: %lld\n", sb.st_size);//2142 octets
+	ft_putstr("Size: ");
+	ft_putnbr(sb.st_size);//2142 octets
+	printf("\n");
+	printf("Last modification date: %ld\n", sb.st_mtime);//Sep 17 23:42
 	return (0);
 }
 
