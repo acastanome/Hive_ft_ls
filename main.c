@@ -2,6 +2,7 @@
 #include "./ft_ls.h"
 #include <stdio.h>//printf
 #include <stdlib.h>
+#include <sys/stat.h>//lstat
 
 //test what opendir returns for file as arg: returns NULL
 /*int	main(int argc, char **argv)
@@ -56,13 +57,13 @@ int	basic_ls_a(void)
 }
 
 //int	list_dir_contents_no_dot(void)
-int	basic_ls(void)
+int	basic_ls(const char *filename)
 {
-	const char	*filename;
+//	const char	*filename;
 	DIR	*dirp = NULL;
 	struct dirent	*dp = NULL;
 
-	filename = "./";
+//	filename = "./";
 	dirp = opendir(filename);
 	if (dirp == NULL)
 	{
@@ -87,9 +88,47 @@ int	basic_ls(void)
 
 int	file_info(char *filename)
 {
-	printf("The passed file is: %s\n", filename);
-	printf("Name: \n");// a_crazy_file
-	printf("Type: \n");//File
+	struct stat	sb;
+
+	lstat(filename, &sb);
+
+	printf("Name: %s\n", filename);// a_crazy_file
+
+	char	type;
+	type = '\0';
+	if (S_ISREG(sb.st_mode))
+		type = '-';
+	else if (S_ISDIR(sb.st_mode))
+		type = 'd';
+	else if (S_ISCHR(sb.st_mode))
+		type = 'c';
+	else if (S_ISBLK(sb.st_mode))
+		type = 'b';
+	else if (S_ISFIFO(sb.st_mode))
+		type = 'p';
+	else if (S_ISLNK(sb.st_mode))
+		type = 'l';
+	else if (S_ISSOCK(sb.st_mode))
+		type = 's';
+	printf("Type: %c\n", type);//File
+
+	static const char *rwx[] = {"---", "--x", "-w-", "-wx",
+								"r--", "r-x", "rw-", "rwx"};
+	static char bits[11];
+	int mode = sb.st_mode;
+//	bits[0] = filetypeletter(mode);
+	bits[0] = type;
+	strcpy(&bits[1], rwx[(mode >> 6)& 7]);
+	strcpy(&bits[4], rwx[(mode >> 3)& 7]);
+	strcpy(&bits[7], rwx[(mode & 7)]);
+	if (mode & S_ISUID)
+		bits[3] = (mode & S_IXUSR) ? 's' : 'S';
+	if (mode & S_ISGID)
+		bits[6] = (mode & S_IXGRP) ? 's' : 'l';
+	if (mode & S_ISVTX)
+		bits[9] = (mode & S_IXOTH) ? 't' : 'T';
+	bits[10] = '\0';
+	printf("\t%s\n", bits);
 	printf("Modes: \n");//rwxr-xr-x
 	printf("Number of links: \n");//1
 	printf("Owner: \n");//zaz
@@ -129,7 +168,7 @@ int	set_options(int options, char *arg)
 }
 
 //check_args
-int	process_input(int argc, char **argv, t_data *data)
+void	process_input(int argc, char **argv, t_data *data)
 {
 	int	i;
 	int	j;
@@ -186,10 +225,13 @@ int	process_input(int argc, char **argv, t_data *data)
 			printf("%s\n", *(data->arg_names + x));
 			x++;
 		}
-
 	}
-	return (0);
 }
+
+/*
+void	sort_list(t_data *data, char *list)
+{}
+*/
 
 int	main(int argc, char **argv)
 {
@@ -209,6 +251,15 @@ int	main(int argc, char **argv)
 //	int	more_dirs = 0;
 	process_input(argc, argv, &data);
 	printf("OPTIONS: %d\n", data.options);//TESTPRINT
+//SORT ARG LIST depending on options
+	if (data.arg_names)
+	{
+		basic_ls(data.arg_names[0]);
+		printf("\nlstat\n");
+		file_info(data.arg_names[0]);
+//		sort_list(&data);
+//		basic_ls(data.arg_names[0]);
+	}
 	/*	if (options == 0)
 		basic_ls();
 	if (options == 4)
