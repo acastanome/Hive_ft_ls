@@ -10,7 +10,7 @@ typedef struct	s_data
 {
 	int		ret;
 	int		options;
-	int		arg_has_files;
+//	int		arg_has_files;
 	int		arg_file_count;
 	char	**arg_names;
 	char	*dir_files;

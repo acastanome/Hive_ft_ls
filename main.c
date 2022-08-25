@@ -100,17 +100,6 @@ int	file_info(char *filename)
 }
 
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
-int	add_arg_name(char *list_end, char *arg)
-{
-	char	*name;
-
-	name = ft_strdup(arg);
-	if (!name)
-		exit(1);
-	return (name);
-}
-
-//ascii decimal values: l 108, R 82, a 97, r 114, t 116
 int	set_options(int options, char *arg)
 {
 	int	i;
@@ -129,8 +118,11 @@ int	set_options(int options, char *arg)
 		else if (arg[i] == 't')
 			options = ((options) | o_t);
 		else
-			printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
+		{
+			printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-Ralrt] [file ...]\n", arg[i]);
+//printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
 			exit(1);
+		}
 		i++;
 	}
 	return (options);
@@ -140,6 +132,7 @@ int	set_options(int options, char *arg)
 int	process_input(int argc, char **argv, t_data *data)
 {
 	int	i;
+	int	j;
 
 	i = 1;
 	while (i < argc)
@@ -151,16 +144,45 @@ int	process_input(int argc, char **argv, t_data *data)
 			else
 			{
 				printf("ft_ls: %s: No such file or directory", argv[i]);
-				data->arg_has_files = 1;
 				data->ret = 1;
 			}
 		}
 		else
-		{
-			data->arg_file_count++:
-			data->arg_names = get_arg_names(data->arg_names, argv[i]);
-		}
+			data->arg_file_count++;
 		i++;
+	}
+	if (data->arg_file_count != 0)
+	{
+		data->arg_names = (char **)malloc(sizeof(char *) * (data->arg_file_count + 1));
+		if (!(data->arg_names))
+		{
+			printf("process_input(): FAILED TO ALLOCATE data->arg_names\n");
+			exit(1);
+		}
+		i = 1;
+		j = 0;
+		while (i < argc)
+		{
+			if (argv[i][0] != '-')
+			{
+				data->arg_names[j] = ft_strdup(argv[i]);
+				if (!(data->arg_names[j]))
+				{
+					printf("process_input(): FAILED TO ALLOCATE data->arg_names[j]\n");
+					exit(1);
+				}
+				j++;
+			}
+			i++;
+		}
+		data->arg_names[j] = NULL;
+		//TESTPRINT
+		while (data->arg_names)
+		{
+			printf("ARG LIST:\n");
+			printf("%s\n", *data->arg_names);
+			data->arg_names++;
+		}
 	}
 	return (0);
 }
@@ -172,9 +194,9 @@ int	main(int argc, char **argv)
 
 	data.ret = 0;
 	data.options = 0;
-	data.arg_has_files = 0;
+//	data.arg_has_files = 0;
 	data.arg_file_count = 0;
-	data->arg_names = NULL;
+	data.arg_names = NULL;
 	//	data.arg_names = NULL;
 	//	data.dir_files = NULL;
 	//		int	options = 0;
