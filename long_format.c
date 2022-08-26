@@ -152,12 +152,15 @@ int	file_size(char *filename)
 }
 
 //TODO
-int	file_modif(char *filename)
+//	printf("Last modification date: %ld\n", sb.st_mtime);//Sep 17 23:42
+long	file_modif(char *filename)
 {
 	struct stat	sb;
+	long	modif;
 
+	modif = 0;
 	lstat(filename, &sb);
-	printf("Last modification date: %ld\n", sb.st_mtime);//Sep 17 23:42
+	modif = sb.st_mtime;
 	return (modif);
 }
 

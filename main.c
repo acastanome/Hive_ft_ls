@@ -57,7 +57,7 @@ int	basic_ls_a(void)
 }
 
 //int	list_dir_contents_no_dot(void)
-int	basic_ls(const char *filename)
+void	basic_ls(const char *filename)
 {
 //	const char	*filename;
 	DIR	*dirp = NULL;
@@ -68,7 +68,7 @@ int	basic_ls(const char *filename)
 	if (dirp == NULL)
 	{
 //		printf("DEBUG: dirp returned NULL\n");
-		return (0);
+		exit (0);//0??
 	}
 	else
 	{
@@ -83,7 +83,37 @@ int	basic_ls(const char *filename)
 		}
 	}
 	closedir(dirp);
-	return (0);
+}
+
+//int	list_dir_contents_no_dot(void)
+void	basic_ls_opt(const char *filename, int options)
+{
+//	const char	*filename;
+	DIR	*dirp = NULL;
+	struct dirent	*dp = NULL;
+
+//	filename = "./";
+	dirp = opendir(filename);
+	if (dirp == NULL)
+	{
+//		printf("DEBUG: dirp returned NULL\n");
+		exit (0);//0??
+	}
+	else
+	{
+//		printf("DEBUG: dirp returned a pointer\n");
+//		dp = readdir(dirp);
+//		if (dp == NULL)
+//			printf("DEBUG: dp returned NULL\n");
+		while ((dp = readdir(dirp)) != NULL)
+		{
+			if ((options == 0) && (dp->d_name[0] != '.'))
+				printf("%s\n", dp->d_name);
+			else if ((options == o_l) && (dp->d_name[0] != '.'))
+				printf("%c%s  %d ---\t---\t%d  %ld  %s\n", file_type(dp->d_name), file_permissions(dp->d_name), file_nb_links(dp->d_name), file_size(dp->d_name), file_modif(dp->d_name), dp->d_name);
+		}
+	}
+	closedir(dirp);
 }
 
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
@@ -114,6 +144,18 @@ int	set_options(int options, char *arg)
 		i++;
 	}
 	return (options);
+}
+
+//	TESTPRINT
+void	print_list(char *list, size_t list_size)
+{
+	size_t x = 0;
+	while (x < list_size)
+	{
+//		printf("ARG LIST:\n");
+		printf("%s\n", (list + x));
+		x++;
+	}
 }
 
 //check_args
@@ -167,13 +209,14 @@ void	process_input(int argc, char **argv, t_data *data)
 		}
 		data->arg_names[j] = NULL;
 		//TESTPRINT
-		int x = 0;
+/*		int x = 0;
 		while (x < data->arg_file_count)
 		{
 			printf("ARG LIST:\n");
 			printf("%s\n", *(data->arg_names + x));
 			x++;
 		}
+*/
 	}
 }
 
@@ -186,7 +229,9 @@ int	main(int argc, char **argv)
 {
   //	const char	*filename;
 	t_data	data;
+	int	i;
 
+	i = 0;
 	data.ret = 0;
 	data.options = 0;
 	data.arg_file_count = 0;
@@ -194,12 +239,25 @@ int	main(int argc, char **argv)
 	process_input(argc, argv, &data);
 	printf("OPTIONS: %d\n", data.options);//TESTPRINT
 //SORT ARG LIST depending on options
+	if (!data.arg_names)
+	{
+//		if (data.options == 0)
+//			basic_ls(".");
+		basic_ls_opt(".", data.options);
+//		printf("%c%s  %d ---\t---\t%d  %ld  %s\n", file_type(data.arg_names[0]), file_permissions(data.arg_names[0]), file_nb_links(data.arg_names[0]), file_size(data.arg_names[0]), file_modif(data.arg_names[0]), data.arg_names[0]);
+	}
+
 	if (data.arg_names)
 	{
-		basic_ls(data.arg_names[0]);
-		printf("\nlstat\n");
+		while (i < data.arg_file_count)
+		{
+			basic_ls_opt(data.arg_names[i], data.options);
+			i++;
+		}
+//		basic_ls(data.arg_names[0]);
 //		file_info(data.arg_names[0]);
-		file_permissions(data.arg_names[0]);
+//		printf("type_perm\tlinks owner\tgroup\tsize\tmodif_t\tname\n");
+//		printf("%c%s  %d ---\t---\t%d  %ld  %s\n", file_type(data.arg_names[0]), file_permissions(data.arg_names[0]), file_nb_links(data.arg_names[0]), file_size(data.arg_names[0]), file_modif(data.arg_names[0]), data.arg_names[0]);
 //		sort_list(&data);
 //		basic_ls(data.arg_names[0]);
 	}
