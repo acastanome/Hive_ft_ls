@@ -249,11 +249,14 @@ int	main(int argc, char **argv)
 
 	if (data.arg_names)
 	{
+		printf("TEST file_count is %d, i is %d, file: %s\n", data.arg_file_count, i, data.arg_names[i]);
 		while (i < data.arg_file_count)
 		{
+			printf("TEST file_count is %d, i is %d, file: %s\n", data.arg_file_count, i, data.arg_names[i]);
 			basic_ls_opt(data.arg_names[i], data.options);
 			i++;
 		}
+		printf("TEST after file_count is %d, i is %d, file: %s\n", data.arg_file_count, i, data.arg_names[i]);
 //		basic_ls(data.arg_names[0]);
 //		file_info(data.arg_names[0]);
 //		printf("type_perm\tlinks owner\tgroup\tsize\tmodif_t\tname\n");
