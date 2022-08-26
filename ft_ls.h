@@ -5,6 +5,9 @@
 #include <unistd.h>//write
 #include <dirent.h>//opendir
 #include "libft/libft.h"
+#include <stdio.h>//printf
+#include <stdlib.h>
+#include <sys/stat.h>//lstat
 
 typedef struct	s_data
 {
@@ -25,6 +28,16 @@ enum e_options
 	o_r = 1 << 3,
 	o_t = 1 << 4,
 };
+
+//long_format.c
+int	file_info(char *filename);
+char	file_type(char *filename);
+char	*file_type_permissions(char *filename);
+char	*file_permissions(char *filename);
+int	file_nb_links(char *filename);
+int	file_owner(char *filename);
+int	file_group(char *filename);int	file_size(char *filename);
+long	file_modif(char *filename);
 
 //DIR *opendir(const char *filename);		ret: pointer or NULL
 //struct dirent *readdir(DIR *dirp);		ret: p to next dir entry, NULL when endofdir or error (then sets errno)
