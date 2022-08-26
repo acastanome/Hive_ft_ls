@@ -86,64 +86,9 @@ int	basic_ls(const char *filename)
 	return (0);
 }
 
-int	file_info(char *filename)
-{
-	struct stat	sb;
-
-	lstat(filename, &sb);
-
-	printf("Name: %s\n", filename);// a_crazy_file
-
-	char	type;
-	type = '\0';
-	if (S_ISREG(sb.st_mode))
-		type = '-';
-	else if (S_ISDIR(sb.st_mode))
-		type = 'd';
-	else if (S_ISCHR(sb.st_mode))
-		type = 'c';
-	else if (S_ISBLK(sb.st_mode))
-		type = 'b';
-	else if (S_ISFIFO(sb.st_mode))
-		type = 'p';
-	else if (S_ISLNK(sb.st_mode))
-		type = 'l';
-	else if (S_ISSOCK(sb.st_mode))
-		type = 's';
-//	printf("Type: %c\n", type);//File
-
-	static const char *rwx[] = {"---", "--x", "-w-", "-wx",
-								"r--", "r-x", "rw-", "rwx"};
-	static char bits[11];
-//	bits[0] = filetypeletter(mode);
-	bits[0] = type;
-	strcpy(&bits[1], rwx[(sb.st_mode >> 6)& 7]);
-	strcpy(&bits[4], rwx[(sb.st_mode >> 3)& 7]);
-	strcpy(&bits[7], rwx[(sb.st_mode & 7)]);
-	if (sb.st_mode & S_ISUID)
-		bits[3] = (sb.st_mode & S_IXUSR) ? 's' : 'S';
-	if (sb.st_mode & S_ISGID)
-		bits[6] = (sb.st_mode & S_IXGRP) ? 's' : 'l';
-	if (sb.st_mode & S_ISVTX)
-		bits[9] = (sb.st_mode & S_IXOTH) ? 't' : 'T';
-	bits[10] = '\0';
-	printf("File type and modes: %s\n", bits);
-//	printf("Modes: \n");//rwxr-xr-x
-
-	printf("Number of links: %d\n", sb.st_nlink);//1
-
-	ft_putstr("MISSING OWNER AND GROUP \n");
-//	printf("Owner: \n", sb.st_uid);//zaz
-//	printf("Group: \n", sb.st_gid);//staff
-//	printf("Size: %lld\n", sb.st_size);//2142 octets
-	ft_putstr("Size: ");
-	ft_putnbr(sb.st_size);//2142 octets
-	printf("\n");
-	printf("Last modification date: %ld\n", sb.st_mtime);//Sep 17 23:42
-	return (0);
-}
-
 //ascii decimal values: l 108, R 82, a 97, r 114, t 116
+//Original message:
+//printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
 int	set_options(int options, char *arg)
 {
 	int	i;
@@ -164,7 +109,6 @@ int	set_options(int options, char *arg)
 		else
 		{
 			printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-Ralrt] [file ...]\n", arg[i]);
-//printf("ft_ls: illegal option -- %c\nusage: ./ft_ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]\n", arg[i]);
 			exit(1);
 		}
 		i++;
@@ -245,15 +189,8 @@ int	main(int argc, char **argv)
 
 	data.ret = 0;
 	data.options = 0;
-//	data.arg_has_files = 0;
 	data.arg_file_count = 0;
 	data.arg_names = NULL;
-	//	data.arg_names = NULL;
-	//	data.dir_files = NULL;
-	//		int	options = 0;
-//more checks to add:  IS okay: ls filename && ls -l filename
-//more checks to add: NOT okay: ls filename -l && ls -l filename -l BEWARE!!!!! NOTE: both produce outputs, no such file or directory and then the ls filename output, other ls -l filename output
-//	int	more_dirs = 0;
 	process_input(argc, argv, &data);
 	printf("OPTIONS: %d\n", data.options);//TESTPRINT
 //SORT ARG LIST depending on options
@@ -261,7 +198,8 @@ int	main(int argc, char **argv)
 	{
 		basic_ls(data.arg_names[0]);
 		printf("\nlstat\n");
-		file_info(data.arg_names[0]);
+//		file_info(data.arg_names[0]);
+		file_permissions(data.arg_names[0]);
 //		sort_list(&data);
 //		basic_ls(data.arg_names[0]);
 	}
